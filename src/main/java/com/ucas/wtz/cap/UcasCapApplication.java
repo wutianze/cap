@@ -11,4 +11,5 @@ public class UcasCapApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(UcasCapApplication.class, args);
 	}
+
 }
