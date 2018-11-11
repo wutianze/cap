@@ -14,9 +14,11 @@ public class Picture {
     private String provider;
     private String place;
     private boolean copyright;
+    private boolean published;
+    private String description;
 
     public Picture(){};
-    public Picture(String id, String addr, Timestamp dateTime, String label, String provider, String place, boolean copyright) {
+    public Picture(String id, String addr, Timestamp dateTime, String label, String provider, String place, boolean copyright, boolean published, String description) {
         this.id = id;
         this.addr = addr;
         this.dateTime = dateTime;
@@ -24,6 +26,8 @@ public class Picture {
         this.provider = provider;
         this.place = place;
         this.copyright = copyright;
+        this.published = published;
+        this.description = description;
     }
 
     public String getId() {
@@ -80,6 +84,22 @@ public class Picture {
 
     public void setCopyright(boolean copyright) {
         this.copyright = copyright;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
 
