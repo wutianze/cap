@@ -1,0 +1,127 @@
+body{
+    min-height:100%;
+    margin:0;
+    padding:0;
+    position:relative;
+}
+
+.show{
+	margin:25px;
+	width:400px;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.p{
+    font-size: 10px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.8);
+    margin-top: 0;
+    padding-bottom: 1em;
+    max-width: 700px;
+    margin: 1em 0em;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+.searchwindow{
+    height: 350px;
+    background-image: url(../../images/school3.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;;
+}
+
+.overhidden{
+    width: 100%;
+    height: 350px;
+    line-height: 50px;
+    text-align: center;
+    background:rgba(255,255,255,0.5);
+}
+
+.container{
+    position: relative;
+    /*left: 100px;*/
+}
+
+.searchinside{
+    align-items: left;
+    padding-left: 100px;
+    padding-top: 100px;
+}
+
+.picture_search{
+    position:absolute;
+    bottom:0px;
+    left:0px;
+    width:100%;
+    height:100%;
+    overflow:auto;
+    z-index:1;
+}
+
+.picture_show{
+    position:absolute;
+    bottom:0px;
+    width:100%;
+    height:60%;
+    text-align:center;
+    z-index:2;
+    overflow:hidden;
+    background:rgba(255,255,255,0.5);
+}
+
+.showbox{
+    height: 100%;
+    display: table;
+    width: 100%;
+    text-align: center;
+    padding-left: 30px;
+    padding-right: 30px;
+    background:rgba(255,255,255,0.5);
+}
+
+.header {
+    display: table-row;
+    height: 40px;
+    line-height: 40px;
+}
+
+.main {
+    height: 100%;
+    display: table;
+    width: 100%;
+}
+
+.leftbox {
+  display: table-cell;
+  width: 60%;
+  height: 100%;
+  line-height: 100%;
+}
+
+.rightbox {
+  display: table-cell;
+  width: 40%;
+  height: 100%;
+  line-height: 100%;
+}
+
+.show_detail{
+    position: absolute;
+    top: 50%;
+    left: :50%;
+    /*align-items: center;*/
+    width: 800px;
+    transform: translate(-50%,-50%);
+}
