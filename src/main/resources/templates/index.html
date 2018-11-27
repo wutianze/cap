@@ -1,16 +1,15 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <!-- Standard Meta -->
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
   <!-- Site Properties -->
   <title>Homepage - Semantic</title>
-  <link rel="stylesheet" type="text/css" href="/css/show.css">
-  <link rel="stylesheet" type="text/css" href="/css/menu.css">
   <link rel="stylesheet" type="text/css" href="/css/reset.css">
   <link rel="stylesheet" type="text/css" href="/css/site.css">
 
@@ -28,14 +27,19 @@
   <link rel="stylesheet" type="text/css" href="/css/icon.css">
   <link rel="stylesheet" type="text/css" href="/css/sidebar.css">
   <link rel="stylesheet" type="text/css" href="/css/transition.css">
+  <link rel="stylesheet" type="text/css" href="/css/calendar.css">
+  <link rel="stylesheet" type="text/css" href="/css/show.css">
+  <link rel="stylesheet" type="text/css" href="/css/menu.css">
   <link href="http://cdn.staticfile.org/semantic-ui/2.2.7/semantic.min.css" rel="stylesheet">
 
   <!-- <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script> -->
   <script src="/js/jquery-3.3.1.min.js"></script>
   <script src="/js/semantic.min.js"></script>
+  <script src="/js/sweetalert.min.js"></script>
   <script src="/js/visibility.js"></script>
   <script src="/js/sidebar.js"></script>
   <script src="/js/transition.js"></script>
+  <script src="/js/calendar.js" charset="utf-8"></script>
   <!-- <script src="./image_load.js"> -->
   <script>
   $(document).ready(function() {
@@ -85,6 +89,7 @@
 
 <!-- Page Contents -->
 <div class="pusher">
+  <div class="picture_search">
   <div class="ui inverted vertical masthead center aligned segment">
 
     <div class="ui container">
@@ -93,38 +98,58 @@
           <i class="sidebar icon"></i>
         </a>
         <a class="active item">搜索</a>
-        <a class="item" href="./upload.html" id="upload">上传</a>
+        <a class="item" href="/upload" id="upload">上传</a>
         <div class="right item">
-          <a class="ui inverted button" href="./login.html">登陆</a>
+          <a class="ui inverted button" href="/login">登陆</a>
         </div>
       </div>
     </div>
 
-    <div class="ui text container">
-      <h1 class="ui inverted header">
-        图片库
-      </h1>
-      <h2></h2>
-      <div class="ui search" style="margin-bottom:10px;">
-          <div class="ui action input">
-              <input type="text" placeholder="输入图片关键词..." id="searchinput">
-              <button class="ui icon button" id = "search">
-                <i class="search icon"></i>
-              </button>
+  </div>
+
+  <div class="searchwindow">
+    <div class="overhidden">
+      <div class="ui searchinside" align="left">
+        <div class="field">
+          <div class="ui left icon input">
+            <input type="text" placeholder="关键词" id="key">
+            <i class="key icon"></i>
           </div>
-          <div class="results"></div>
-      </div>
-      <div>     
-          <button class="ui primary basic button prebutton" style="margin:10px;" > 雁栖湖 </button>
-          <button class="ui positive basic button prebutton" style="margin:10px;" > 钟楼 </button>
-          <button class="ui negative basic button prebutton" style="margin:10px;" > 操场 </button>
-      </div>
-      <div> 
-          <button class="ui positive basic button prebutton" style="margin:10px;" > 玉泉路 </button>
-          <button class="ui negative basic button prebutton" style="margin:10px;" > 校庆 </button>
+          <button class="ui primary button prebutton" style="margin:3px;" > 白天 </button>
+          <button class="ui positive button prebutton" style="margin:3px;" > 校庆 </button>
+          <button class="ui negative button prebutton" style="margin:3px;" > 绿地 </button>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <input type="text" placeholder="拍摄作者" id="author">
+            <i class="users icon"></i>
+          </div>
+          <button class="ui primary button prebutton" style="margin:3px;" > 哈哈哈 </button>
+          <button class="ui positive button prebutton" style="margin:3px;" > 好好好 </button>
+          <button class="ui negative button prebutton" style="margin:3px;" > 呵呵呵 </button>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <input type="text" placeholder="拍摄地点" id="place">
+            <i class="camera icon"></i>
+          </div>
+          <button class="ui primary button prebutton" style="margin:3px;" > 雁栖湖 </button>
+          <button class="ui positive button prebutton" style="margin:3px;" > 钟楼 </button>
+          <button class="ui negative button prebutton" style="margin:3px;" > 操场 </button>
+        </div>
+        <div class="field">
+          <div class="ui left icon input calendar" id="starttime">
+            <input type="text" placeholder="开始时间" id="startdate">
+            <i class="calendar alternate icon"></i>
+          </div>
+          <div class="ui left icon input calendar" id="endtime">
+            <input type="text" placeholder="结束时间" id="enddate">
+            <i class="calendar alternate icon"></i>
+          </div>
+        </div>
+        <button class="black ui button" style="margin:3px;" id="search"> 搜索 </button>
       </div>
     </div>
-
   </div>
 
 
@@ -132,7 +157,7 @@
     <div class="ui equal width stackable internally celled grid">
       <div id="container" class="ui link cards">
           <div class="image label p">
-              <img src="../images/1.png" alt="" class="show">
+              <img src="/images/1.png" id="0" class="show">
               <div class="labels">
                 <a class="ui label">Red</a>
                 <a class="ui label">Orange</a>
@@ -142,7 +167,7 @@
               </div>
           </div>
           <div class="image label p">
-              <img src="../images/2.png" alt="" class="show">
+              <img src="/images/2.png" id="1" class="show">
               <div class="labels">
                 <a class="ui label">Red</a>
                 <a class="ui label">Orange</a>
@@ -184,9 +209,89 @@
       </div>
     </div>
   </div>
-</div>
+  </div>
 
+  <div hidden class="picture_show">
+  <div class="ui showbox">
+      <div class="header icon" align="right">
+        <i class="right close icon detail_close"></i>
+      </div>
+      <div class="header button" align="left">
+        <button class="ui red button delbutton" style="margin:3px;" > 删除图片 </button>
+      </div>
+      <div class="main">
+        <div class="ui leftbox" align="center">
+          <img src="/images/1.png" class="show_detail">
+        </div>
+        <div class="ui rightbox divided items" align="left">
+          <div class="item">
+            <i class="file icon"></i>
+            <div class="middle aligned content detail_id">
+              图片id
+            </div>
+          </div>
+          <div class="item">
+            <i class="user icon"></i>
+            <div class="middle aligned content detail_author">
+              作者
+            </div>
+          </div>
+          <div class="item">
+            <i class="bookmark icon"></i>
+            <div class="middle aligned content">
+              标签
+            </div>
+            <div class="labels detail_label">
+              <a class="ui label">Red</a>
+              <a class="ui label">Orange</a>
+            </div>
+          </div>
+          <div class="item">
+            <i class="calendar icon"></i>
+            <div class="middle aligned content detail_date">
+              拍摄时间
+            </div>
+          </div>
+          <div class="item">
+            <i class="camera icon"></i>
+            <div class="middle aligned content detail_place">
+              拍摄地点
+            </div>
+          </div>
+          <div class="item">
+            <i class="edit icon"></i>
+            <div class="middle aligned content detail_description">
+              图片描述
+            </div>
+          </div>
+          <div class="item">
+            <i class="paper plane icon"></i>
+            <div class="middle aligned content detail_published">
+              已发布
+            </div>
+          </div>
+          <div class="item">
+            <i class="copyright icon"></i>
+            <div class="middle aligned content detail_copyright">
+              有版权
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hidden footer">Footer</div>
+    <!-- <div class="ui img">
+      <img src="../images/1.png" width="400">
+    </div>
+    <div class="ui labels">
+      <a class="ui label">Red</a>
+      <a class="ui label">Orange</a>
+    </div> -->
+  </div>
+  <div>
+</div>
+  </div>
+</div>
 </body>
-<script src="../static/js/search.js"></script>
+<script src="/js/pic_search.js"></script>
 
 </html>

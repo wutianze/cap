@@ -2,14 +2,14 @@ package com.ucas.wtz.cap.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 public class Picture {
     @Id
     private String id;
-    private String addr;
-    private Timestamp dateTime;
+    private String imgPath;
+    private Date dateTime;
     private String label;
     private String provider;
     private String place;
@@ -18,9 +18,9 @@ public class Picture {
     private String description;
 
     public Picture(){};
-    public Picture(String id, String addr, Timestamp dateTime, String label, String provider, String place, boolean copyright, boolean published, String description) {
+    public Picture(String id, String imgPath, Date dateTime, String label, String provider, String place, boolean copyright, boolean published, String description) {
         this.id = id;
-        this.addr = addr;
+        this.imgPath = imgPath;
         this.dateTime = dateTime;
         this.label = label;
         this.provider = provider;
@@ -38,19 +38,11 @@ public class Picture {
         this.id = id;
     }
 
-    public String getAddr() {
-        return addr;
-    }
-
-    public void setAddr(String addr) {
-        this.addr = addr;
-    }
-
-    public Timestamp getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(Timestamp dateTime) {
+    public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
 
@@ -100,6 +92,14 @@ public class Picture {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 }
 
