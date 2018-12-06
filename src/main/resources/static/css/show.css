@@ -6,17 +6,17 @@ body{
 }
 
 .show{
-	margin:25px;
-	width:400px;
+    margin:25px;
+    width:400px;
 }
 
 .inputfile {
-	width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
 }
 
 .p{
@@ -55,9 +55,8 @@ body{
 }
 
 .searchinside{
-    align-items: left;
     padding-left: 100px;
-    padding-top: 100px;
+    padding-top: 150px;
 }
 
 .picture_search{
@@ -79,6 +78,16 @@ body{
     z-index:2;
     overflow:hidden;
     background:rgba(255,255,255,0.5);
+}
+
+.id_search_before {
+    padding-top:200px;
+    padding-bottom: 200px;
+}
+
+.id_search_after {
+    padding-top:50px;
+    padding-bottom: 50px;
 }
 
 .showbox{
@@ -104,24 +113,45 @@ body{
 }
 
 .leftbox {
-  display: table-cell;
-  width: 60%;
-  height: 100%;
-  line-height: 100%;
+    display: table-cell;
+    width: 60%;
+    height: 100%;
+    line-height: 100%;
+    vertical-align: middle;
 }
 
 .rightbox {
-  display: table-cell;
-  width: 40%;
-  height: 100%;
-  line-height: 100%;
+    display: table-cell;
+    width: 40%;
+    height: 100%;
+    line-height: 100%;
 }
 
 .show_detail{
     position: absolute;
     top: 50%;
-    left: :50%;
+    left: 50%;
     /*align-items: center;*/
-    width: 800px;
+    width: 55%;
     transform: translate(-50%,-50%);
+}
+
+.show_detail2{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 90%;
+    margin: 0;
+    align-items: center;
+}
+
+.push {
+    padding: 20px;
+    min-height: 100%;
+    margin: 0 auto -200px;
+}
+
+.footerpush,
+.footer {
+    height: 200px;
 }
