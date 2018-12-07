@@ -12,6 +12,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/index").setViewName("index");
         registry.addViewController("/upload").setViewName("upload");
+        registry.addViewController("/idsearch").setViewName("idsearch");
     }
    /* @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

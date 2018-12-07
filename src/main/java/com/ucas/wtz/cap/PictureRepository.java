@@ -19,5 +19,5 @@ public interface PictureRepository extends JpaRepository<Picture, Long>{
     List<Picture> findByLabelAndPlace(String label,String place);
     List<Picture> findByPlaceAndProvider(String place,String provider);
     Picture save(Picture picture);
-    //List<Picture> findBetweenDateTime(Timestamp starttime,Timestamp endtime);
+    //List<Picture> findBetweenDatetime(Timestamp starttime,Timestamp endtime);
 }

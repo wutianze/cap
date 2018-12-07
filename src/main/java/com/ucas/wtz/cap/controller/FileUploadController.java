@@ -1,22 +1,18 @@
 package com.ucas.wtz.cap.controller;
 
-import com.ucas.wtz.cap.DBUtil;
 import com.ucas.wtz.cap.Model.Picture;
 import com.ucas.wtz.cap.PictureRepository;
 import net.minidev.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -31,13 +27,6 @@ private String uploadPicPath;
 
 @Autowired
 PictureRepository pictureRepository;
-
-// 主界面
-  @GetMapping("/")
-  public String listUploadedFiles(Model model) throws IOException {
-    model.addAttribute("messages", "cpxxxxx");
-  return  "index";
-  }
     @ResponseBody
     @PostMapping("/uploadImg")
     public String uploadImg(@RequestParam("label") String label,@RequestParam("provider") String provider,@RequestParam("place") String place,@RequestParam("dateTime") String dateTime,@RequestParam("description") String description,@RequestParam("published") boolean published,@RequestParam("copyright") boolean copyright,@RequestParam("imgFile") MultipartFile file) throws Exception {
@@ -45,26 +34,26 @@ PictureRepository pictureRepository;
         String date = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
         Date existTime = null;
         DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-        if(dateTime!="")existTime = format1.parse(dateTime);
+        if(!dateTime.equals(""))existTime = format1.parse(dateTime);
         String name = storePic(file);
       pictureRepository.save(new Picture(date+':'+name,"\\images\\pic\\"+name,existTime,label,provider,place,copyright,published,description));
         return  "success";
     }
     @ResponseBody
     @PostMapping("/search")
-    public String search(@RequestParam("content") String label,@RequestParam("provider") String provider,@RequestParam("place") String place,@RequestParam("starttime") String starttime,@RequestParam("endtime") String endtime) throws IOException {
+    public String search(@RequestParam("content") String label,@RequestParam("provider") String provider,@RequestParam("place") String place,@RequestParam("starttime") String starttime,@RequestParam("endtime") String endtime) throws Exception {
       List<Picture>result = new ArrayList<Picture>();
 
-      if(label!=""){//标签查找约定，返回全部符合的图片，即图片必须符合所有标签才返回
+      if(!label.equals("")){//标签查找约定，返回全部符合的图片，即图片必须符合所有标签才返回
           List<Picture>tmp = new ArrayList<Picture>();
-          if(provider!=""){
-              if(place!=""){
+          if(!provider.equals("")){
+              if(!place.equals("")){
                   tmp = pictureRepository.findByPlaceAndProvider(place,provider);
               }else{
                   tmp = pictureRepository.findByProvider(provider);
               }
           }else{
-              if(place!=""){
+              if(!place.equals("")){
                   tmp = pictureRepository.findByPlace(place);
               }else{
                   tmp = pictureRepository.findAll();
@@ -74,7 +63,7 @@ PictureRepository pictureRepository;
           for(Picture pic : tmp){
               boolean flag = false;
               for(int i=0;i<labels.length;i++){
-                  if(pic.getLabel().indexOf(labels[i])==-1){
+                  if(!pic.getLabel().contains(labels[i])){
                       flag = true;
                       break;
                   }
@@ -84,19 +73,35 @@ PictureRepository pictureRepository;
               }
           }
       }else{
-          if(provider!=""){
-              if(place!=""){
+          if(!provider.equals("")){
+              if(!place.equals("")){
                   result = pictureRepository.findByPlaceAndProvider(place,provider);
               }else{
                   result = pictureRepository.findByProvider(provider);
               }
           }else{
-              if(place!=""){
+              if(!place.equals("")){
                   result = pictureRepository.findByPlace(place);
+              }else{
+                  result = pictureRepository.findAll();
               }
           }
       }
-      String re = JSONArray.toJSONString(result);
+      List<Picture>timeRe = new ArrayList<>();
+      Date sT=null,eT=null;
+      if(starttime!=null&&(!starttime.equals("")))sT = new SimpleDateFormat("yyyy-MM-dd").parse(starttime);
+      if(endtime!=null&&(!endtime.equals("")))eT = new SimpleDateFormat("yyyy-MM-dd").parse(endtime);
+      for(Picture pic : result){
+          if(sT!=null){
+              Date picDate = new SimpleDateFormat("yyyy-MM-dd").parse(pic.getDateTime().toString());
+              if((picDate.after(sT)&&picDate.before(eT))||picDate.equals(sT)||picDate.equals(eT)){
+                  timeRe.add(pic);
+              }
+          }else {
+              timeRe.add(pic);
+          }
+      }
+      String re = JSONArray.toJSONString(timeRe);
       System.out.println(re);
         //readImage2DB("F:\\","a","F:\\",dateTime,"label","me","ucas",true);
         return  re;
