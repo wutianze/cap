@@ -1,14 +1,20 @@
 package com.ucas.wtz.cap.controller;
 
 import com.ucas.wtz.cap.Model.Picture;
+import com.ucas.wtz.cap.Model.SysRole;
+import com.ucas.wtz.cap.Model.SysUser;
 import com.ucas.wtz.cap.PictureRepository;
+import com.ucas.wtz.cap.SysUserRepository;
 import net.minidev.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,6 +24,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 public class FileUploadController {
@@ -26,7 +33,28 @@ public class FileUploadController {
 private String uploadPicPath;
 
 @Autowired
-PictureRepository pictureRepository;
+    PictureRepository pictureRepository;
+@Autowired
+    SysUserRepository sysUserRepository;
+
+    @ResponseBody
+    @PostMapping("/register")//仅供管理员使用
+    public  String register(@RequestParam("username") String username, @RequestParam("password") String password) {
+        //如果用户名存在，返回错误
+        if (sysUserRepository.findByUsername(username) != null) {
+            return "username exist";
+        }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encode = encoder.encode(password);
+
+        if(sysUserRepository.save(new SysUser(username,encode))!= null){
+            return "success";
+        }else{
+            return "false";
+        }
+    }
+
+
     @ResponseBody
     @PostMapping("/uploadImg")
     public String uploadImg(@RequestParam("label") String label,@RequestParam("provider") String provider,@RequestParam("place") String place,@RequestParam("dateTime") String dateTime,@RequestParam("description") String description,@RequestParam("published") boolean published,@RequestParam("copyright") boolean copyright,@RequestParam("imgFile") MultipartFile file) throws Exception {
@@ -35,10 +63,33 @@ PictureRepository pictureRepository;
         Date existTime = null;
         DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
         if(!dateTime.equals(""))existTime = format1.parse(dateTime);
-        String name = storePic(file);
-      pictureRepository.save(new Picture(date+':'+name,"\\images\\pic\\"+name,existTime,label,provider,place,copyright,published,description));
+        String id = date+'-'+new Random().nextLong();
+        storePic(file,id);
+        pictureRepository.save(new Picture(id,"\\images\\pic\\"+id,existTime,label,provider,place,copyright,published,description));
         return  "success";
     }
+
+    @ResponseBody
+    @PostMapping("/deleteImg")
+    public String deleteImg(@RequestParam("id") String id) throws Exception {
+        ;
+        File file = new File(uploadPicPath+id);
+        // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+        if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                pictureRepository.deleteById(id);
+                System.out.println("删除单个文件" + id + "成功！");
+                return "success";
+            } else {
+                System.out.println("删除单个文件" + id + "失败！");
+                return "fail";
+            }
+        } else {
+            System.out.println("删除单个文件失败：" + id + "不存在！");
+            return "not exist";
+        }
+    }
+
     @ResponseBody
     @PostMapping("/search")
     public String search(@RequestParam("content") String label,@RequestParam("provider") String provider,@RequestParam("place") String place,@RequestParam("starttime") String starttime,@RequestParam("endtime") String endtime) throws Exception {
@@ -107,8 +158,8 @@ PictureRepository pictureRepository;
         return  re;
     }
 
-  private String storePic(MultipartFile file) throws Exception {
-    String filename = StringUtils.cleanPath(file.getOriginalFilename());
+  private boolean storePic(MultipartFile file,String filename) throws Exception {
+    //String filename = StringUtils.cleanPath(file.getOriginalFilename());
       try (InputStream inputStream = file.getInputStream()) {
         Files.copy(inputStream, Paths.get(uploadPicPath + filename), // somewhat tricky
                                   StandardCopyOption.REPLACE_EXISTING);
@@ -116,6 +167,6 @@ PictureRepository pictureRepository;
     catch (Exception e) {
       throw new Exception("失败！" + filename, e);
     }
-    return filename;
+    return true;
   }
 }
