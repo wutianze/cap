@@ -58,14 +58,15 @@ private String uploadPicPath;
     @ResponseBody
     @PostMapping("/uploadImg")
     public String uploadImg(@RequestParam("label") String label,@RequestParam("provider") String provider,@RequestParam("place") String place,@RequestParam("dateTime") String dateTime,@RequestParam("description") String description,@RequestParam("published") boolean published,@RequestParam("copyright") boolean copyright,@RequestParam("imgFile") MultipartFile file) throws Exception {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         String date = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
         Date existTime = null;
         DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
         if(!dateTime.equals(""))existTime = format1.parse(dateTime);
         String id = date+'-'+new Random().nextLong();
         storePic(file,id);
-        pictureRepository.save(new Picture(id,"\\images\\pic\\"+id,existTime,label,provider,place,copyright,published,description));
+        //pictureRepository.save(new Picture(id,"\\images\\pic\\"+id,existTime,label,provider,place,copyright,published,description));
+        pictureRepository.save(new Picture(id,"\\"+id,existTime,label,provider,place,copyright,published,description));
         return  "success";
     }
 
