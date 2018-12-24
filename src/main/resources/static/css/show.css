@@ -145,13 +145,12 @@ body{
     align-items: center;
 }
 
-.push {
-    padding: 20px;
+.pusher {
     min-height: 100%;
-    margin: 0 auto -200px;
+    margin: 0 auto -50px;
 }
 
 .footerpush,
 .footer {
-    height: 200px;
+    height: 50px;
 }
