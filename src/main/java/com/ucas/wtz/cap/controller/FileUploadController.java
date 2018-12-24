@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -63,9 +64,9 @@ private String uploadPicPath;
         Date existTime = null;
         DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
         if(!dateTime.equals(""))existTime = format1.parse(dateTime);
-        String id = date+'-'+new Random().nextLong();
+        String id = date+'-'+new Random().nextLong()+StringUtils.cleanPath(file.getOriginalFilename());
         storePic(file,id);
-        //pictureRepository.save(new Picture(id,"\\images\\pic\\"+id,existTime,label,provider,place,copyright,published,description));
+        //pictureRepository.save(new Picture(id,"\\"+id,existTime,label,provider,place,copyright,published,description));
         pictureRepository.save(new Picture(id,"/"+id,existTime,label,provider,place,copyright,published,description));
         return  "success";
     }
@@ -94,8 +95,7 @@ private String uploadPicPath;
     @ResponseBody
     @PostMapping("/search")
     public String search(@RequestParam("content") String label,@RequestParam("provider") String provider,@RequestParam("place") String place,@RequestParam("starttime") String starttime,@RequestParam("endtime") String endtime) throws Exception {
-      List<Picture>result = new ArrayList<Picture>();
-
+        List<Picture>result = new ArrayList<Picture>();
       if(!label.equals("")){//标签查找约定，返回全部符合的图片，即图片必须符合所有标签才返回
           List<Picture>tmp = new ArrayList<Picture>();
           if(!provider.equals("")){
@@ -155,7 +155,6 @@ private String uploadPicPath;
       }
       String re = JSONArray.toJSONString(timeRe);
       System.out.println(re);
-        //readImage2DB("F:\\","a","F:\\",dateTime,"label","me","ucas",true);
         return  re;
     }
 
