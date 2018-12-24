@@ -66,7 +66,7 @@ private String uploadPicPath;
         String id = date+'-'+new Random().nextLong();
         storePic(file,id);
         //pictureRepository.save(new Picture(id,"\\images\\pic\\"+id,existTime,label,provider,place,copyright,published,description));
-        pictureRepository.save(new Picture(id,"\\"+id,existTime,label,provider,place,copyright,published,description));
+        pictureRepository.save(new Picture(id,"/"+id,existTime,label,provider,place,copyright,published,description));
         return  "success";
     }
 
