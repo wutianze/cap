@@ -23,6 +23,32 @@ showfile = function() {
 	$(filemessage).text(fileObj.name);
 }
 
+clear = function() {
+	let img_author = document.getElementById("imageauthor");
+	$(img_author).val('');
+
+	let shoot_place = document.getElementById("shootplace");
+	$(shoot_place).val('');
+
+	let shoot_time = document.getElementById("shootdate");
+	$(shoot_time).val('');
+
+	let img_label_obj = document.getElementsByClassName("tagshow");
+	$(img_label_obj).remove();
+
+	let img_describe = document.getElementById("imagedescribe");
+	$(img_describe).val('');
+
+	let publish = document.getElementById("publish");
+	publish.checked = 0;
+
+	let copyright = document.getElementById("copyright");
+	copyright.checked = 0;
+
+	let filemessage = document.getElementById("filemessage");
+	$(filemessage).attr("hidden", "true");
+}
+
 // function showfile(this){
 // 	let img_file = document.getElementById("embedpollfileinput");
 // 	let fileObj = img_file.files[0];
@@ -113,18 +139,38 @@ $(".submit").click(function(){
 		return;
 	}
 
+	let show = $('#uploadprocessshow');
+    show.removeAttr('hidden');
+
 	$.ajax({
 	    url: '/uploadImg',
 	    type: 'POST',
 	    cache:false,
 	    data: formdata,
 	    contentType:false,
-	    processData:false
+	    processData:false,
+	    xhr: function(){
+	        myXhr = $.ajaxSettings.xhr();
+	        if(myXhr.upload){
+	          myXhr.upload.addEventListener('progress',function(e) {
+	            if (e.lengthComputable) {
+	              var percent = Math.floor(e.loaded/e.total*100);
+	              if(percent <= 100) {
+	                $("#uploadprocess").progress('set progress', percent);
+	              }
+	            }
+	          }, false);
+	        }
+	        return myXhr;
+	    },
 	}).done(function(res) {
+		clear();
 		swal("完成", "上传成功","success");
 	}).fail(function(res) {
 		swal("失败", "上传失败，请重试", "error");
 	});
+
+	show.attr("hidden", "true");
 });
 
 $("#shoottime").calendar({
