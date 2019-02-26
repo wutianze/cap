@@ -47,6 +47,9 @@ clear = function() {
 
 	let filemessage = document.getElementById("filemessage");
 	$(filemessage).attr("hidden", "true");
+
+	let uploadprocessshow = document.getElementById("uploadprocessshow");
+	$(uploadprocessshow).attr("hidden", "true");
 }
 
 // function showfile(this){
@@ -165,7 +168,7 @@ $(".submit").click(function(){
 	    },
 	}).done(function(res) {
 		clear();
-		swal("完成", "上传成功","success");
+		swal("完成", "上传成功，图片id为" + res ,"success");
 	}).fail(function(res) {
 		swal("失败", "上传失败，请重试", "error");
 	});
