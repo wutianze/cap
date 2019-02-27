@@ -128,12 +128,12 @@ body{
 }
 
 .show_detail{
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    /*position: absolute;*/
+    /*top: 50%;*/
+    /*left: 50%;*/
     /*align-items: center;*/
-    width: 55%;
-    transform: translate(-50%,-50%);
+    width: 90%;
+    /*transform: translate(-50%,-50%);*/
 }
 
 .show_detail2{
