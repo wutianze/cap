@@ -68,7 +68,7 @@ private String uploadPicPath;
         storePic(file,id);
         //pictureRepository.save(new Picture(id,"\\"+id,existTime,label,provider,place,copyright,published,description));
         pictureRepository.save(new Picture(id,"/"+id,existTime,label,provider,place,copyright,published,description));
-        return  "success";
+        return  id;
     }
 
     @ResponseBody
