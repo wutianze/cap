@@ -4,19 +4,55 @@ var header = $("meta[name='_csrf_header']").attr("content");
 $(document).ajaxSend(function(e, xhr, options) {
     xhr.setRequestHeader(header, token);
 });
+
+init_picture();
+initRecord();
+
+function init_picture() {
+	console.log("init_picture");
+	let key = "";
+
+	let author = "";
+
+	let place = "";
+
+	let starttime = "";
+
+	let endtime = "";
+
+	$.ajax({
+	    url: '/search',
+	    type: 'POST',
+	    data: {'content':key,
+				'provider':author,
+				'place':place,
+				'starttime':starttime,
+				'endtime':endtime
+			},
+	    success:function(res){
+            show_picture(res);
+        }
+	}).done(function(res) {
+	}).fail(function(res) {
+	});
+}
+
 $("#search").click(function(){
 	console.log("search");
 	let key = document.getElementById("key");
 	key = $(key).val();
 	console.log(key);
+	setRecord("key", key);
 
 	let author = document.getElementById("author");
 	author = $(author).val();
 	console.log(author);
+	setRecord("author", author);
 
 	let place = document.getElementById("place");
 	place = $(place).val();
 	console.log(place);
+	setRecord("place", place);
 
 	let starttime = document.getElementById("startdate");
 	starttime = $(starttime).val();
@@ -26,11 +62,11 @@ $("#search").click(function(){
 	endtime = $(endtime).val();
 	console.log(endtime);
 
-	if(key.length == 0 && author.length == 0 && place.length == 0 && 
-		starttime.length == 0 && endtime.length == 0){
-		swal("错误", "至少有一项不为空", "error");
-		return;
-	}
+	// if(key.length == 0 && author.length == 0 && place.length == 0 && 
+	// 	starttime.length == 0 && endtime.length == 0){
+	// 	swal("错误", "至少有一项不为空", "error");
+	// 	return;
+	// }
 	if(endtime < starttime){
 		swal("错误", "开始日期不能大于结束日期", "error");
 		// console.log("错误");
@@ -255,6 +291,72 @@ $('.detail_close').click(function(){
 	let show = $('.picture_show');
 	show.attr("hidden", "true");
 });
+
+
+/****************************************************
+cookies 的操作部分
+用来替换常用搜索内容
+*****************************************************/
+
+function getCookie(c_name){
+	if (document.cookie.length>0){
+		c_start=document.cookie.indexOf(c_name + "=");
+		if (c_start!=-1){ 
+			c_start=c_start + c_name.length+1;
+			c_end=document.cookie.indexOf(";",c_start);
+			if (c_end==-1) c_end=document.cookie.length;　　
+			return unescape(document.cookie.substring(c_start,c_end));
+		} 
+	}
+	return ""
+}　
+
+function setRecord(key, content){
+	let old_content = getCookie(key);
+	// old_content = "hhh";
+	key_list = old_content.split("$");
+	if(key_list.length == 3){
+		for(let i = 0; i < 2; i++){
+			key_list[i] = key_list[i+1];
+		}
+		key_list[2] = content;
+		document.cookie = key + "=" + key_list.join("$");
+		// console.log(key + "=" + key_list.join("$"));
+	}else{
+		if (old_content == "") key_list = new Array();
+		key_list.push(content);
+		document.cookie = key + "=" + key_list.join("$");
+		// console.log(key_list.length);
+		// console.log(key + "=" + key_list.join("$"));
+	}
+}
+
+function initRecord(){
+	let keys = getCookie("key");
+	if(keys != ""){
+		let key_list = keys.split("$");
+		let key_text = $("#key").parent().siblings(".prebutton");
+		for(let i = 0; i < key_list.length; i++){
+			$(key_text[i]) = key_list[i];
+		}
+	}
+	let authors = getCookie("author");
+	if(authors != ""){
+		let author_list = authors.split("$");
+		let author_text = $("#author").parent().siblings(".prebutton");
+		for(let i = 0; i < key_list.length; i++){
+			$(author_text[i]) = author_list[i];
+		}
+	}
+	let places = getCookie("place");
+	if(places != ""){
+		let place_list = places.split("$");
+		let place_text = $("#place").parent().siblings(".prebutton");
+		for(let i = 0; i < key_list.length; i++){
+			$(place_text[i]) = place_list[i];
+		}
+	}
+}　
 
 // window.onload = function(){
 // 	let cookies = document.cookie.split(';');
