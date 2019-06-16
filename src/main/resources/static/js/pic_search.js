@@ -27,7 +27,8 @@ function init_picture() {
 				'provider':author,
 				'place':place,
 				'starttime':starttime,
-				'endtime':endtime
+				'endtime':endtime,
+				'id':""
 			},
 	    success:function(res){
             show_picture(res);
@@ -35,6 +36,7 @@ function init_picture() {
 	}).done(function(res) {
 	}).fail(function(res) {
 	});
+	showclick();
 }
 
 $("#search").click(function(){
@@ -80,7 +82,8 @@ $("#search").click(function(){
 				'provider':author,
 				'place':place,
 				'starttime':starttime,
-				'endtime':endtime
+				'endtime':endtime,
+				'id':""
 			},
 	    success:function(res){
             show_picture(res);
@@ -88,6 +91,7 @@ $("#search").click(function(){
 	}).done(function(res) {
 	}).fail(function(res) {
 	});
+	showclick();
 });
 
 $('.prebutton').click(function(){
@@ -121,7 +125,7 @@ function show_picture(res) {
 		let label = $("<div></div>");
 		label.addClass("labels");
 		let tags = item.label.split("\\t");
-		for(let i = 0; i < tags.length; i++){
+		for(let i = 0; i < tags.length-1; i++){
 			let tag = $("<a></a>").text(tags[i]);
 			tag.addClass("ui label");
 			label.append(tag);
@@ -173,118 +177,104 @@ $("#endtime").calendar({
     }
 });
 
-$(".show").click(function(){
-	content = $(this).id;
-	let show = $('.picture_show');
-    show.removeAttr('hidden');
-	$.ajax({
-	    url: '/image_detail',
-	    type: 'POST',
-	    cache: false,
-	    data: {'id':content
-			},
-	    processData: false,
-	    contentType: false,
-	    success:function(res){
-            picture_detail(res);
-            let show = $('.picture_show');
-            show.removeAttr('hidden');
-        }
-	}).done(function(res) {
-	}).fail(function(res) {
+function showclick(){
+	$(".show").click(function(){
+		content = $(this).attr('id');
+		let show = $('.picture_show');
+	    show.removeAttr('hidden');
+		$.ajax({
+	        url: '/search',
+	        type: 'POST',
+	        data: {
+	            'id': content,
+	            'content':"",
+	            'provider': "",
+	            'place': "",
+	            'starttime': "",
+	            'endtime': ""
+	        },
+	        success: function (res) {
+	            picture_detail(res);
+	            let show = $('.picture_show');
+	            show.removeAttr('hidden');
+	        }
+	    }).done(function (res) {
+	    }).fail(function (res) {
+	    });
 	});
-});
+}
 
 // "{\"id\":\"1\", \"provider\":\"哈哈哈\", \"label\":\"a\tb\", \"dateTime\":\"2018-05-12\", \"place\":\"雁栖湖\", \"description\":\"秋天拍的\", \"published\":\"0\", \"copyright\":\"0\", \"imgPath\":\"../images/1.png\"}"
-
 function picture_detail(res){
-	res = res.replace("\\t","$");
-	console.log(res);
-	JSON.parse(res, function(k, v) {
-		console.log(k, v);
-		if(k == 'id'){
-			let detail_id = $(".detail_id");
-			detail_id.text(v);
-		}
-		if(k == 'provider'){
-			let detail_author = $('.detail_author');
-			detail_author.text(v);
-		}
-		if(k == 'label'){
-			let detail_label = $('.detail_label');
-			detail_label.empty();
-			let tags = v.split("$");
-			for(let i = 0; i < tags.length; i++){
-				console.log(tags[i]);
-				let tag = $("<a></a>").text(tags[i]);
-				tag.addClass("ui label");
-				detail_label.append(tag);
-			}
-		}
-		if(k == 'dateTime'){
-			let detail_date = $('.detail_date');
-			detail_date.text(v);
-		}
-		if(k == 'place'){
-			let detail_place = $('.detail_place');
-			detail_place.text(v);
-		}
-		if(k == 'description'){
-			let detail_description = $('.detail_description');
-			detail_description.text(v);
-		}
-		if(k == 'published'){
-			let detail_published = $('.detail_published');
-			if(v == '0'){
-				detail_published.text('已发布');
-			}else{
-				detail_published.text('未发布');
-			}
-		}
-		if(k == 'copyright'){
-			let detail_copyright = $('.detail_copyright');
-			if(v == '0'){
-				detail_copyright.text('有版权');
-			}else{
-				detail_copyright.text('无版权');
-			}
-		}
-		if(k == 'imgPath'){
-			let show_detail = $('.show_detail');
-			show_detail.attr("src", v);
-		}
-	});  
+    res = res.replace("\\t","$");
+    res = eval('(' + res + ')');
+    res = res[0];
+    console.log(res);
+    let detail_id = $(".detail_id");
+    detail_id.text(res.id);
+    let detail_author = $('.detail_author');
+    detail_author.text(res.provider);
+    let detail_label = $('.detail_label');
+    detail_label.empty();
+    let tags = res.label.split("$");
+    for(let I = 0; I < tags.length-1; I++){
+        console.log(tags[I]);
+        let tag = $("<a></a>").text(tags[I]);
+        tag.addClass("ui label");
+        detail_label.append(tag);
+    }
+    let detail_date = $('.detail_date');
+    detail_date.text(res.dateTime);
+    let detail_place = $('.detail_place');
+    detail_place.text(res.place);
+    let detail_description = $('.detail_description');
+    detail_description.text(res.description);
+    let detail_published = $('.detail_published');
+    if(res.published == '0'){
+        detail_published.text('已发布');
+    }else{
+        detail_published.text('未发布');
+    }
+    let detail_copyright = $('.detail_copyright');
+    if(res.copyright == '0'){
+        detail_copyright.text('有版权');
+    }else{
+        detail_copyright.text('无版权');
+    }
+    let show_detail = $('.show_detail');
+    console.log(res.imgPath);
+    show_detail.attr("src", res.imgPath);
 }
 
 $('.delbutton').click(function(){
-	let detail_id = $(".detail_id");
-	detail_id = detail_id.text();
-	swal({ 
-	  title: "确定删除吗？", 
-	  text: "你将无法恢复该文件，你的行为将被记录！", 
-	  type: "warning",
-	  showCancelButton: true, 
-	  confirmButtonColor: "#DD6B55",
-	  confirmButtonText: "确定删除！", 
-	  closeOnConfirm: false
-	}.then(
-		function(){
-			$.ajax({
-			    url: '/delete_image',
-			    type: 'POST',
-			    cache: false,
-			    data: {'id':detail_id
-					},
-			    processData: false,
-			    contentType: false,
-			    success:function(res){
-		            swal("删除！", "文件已经被删除。", "success"); 
-		        }
-			}).done(function(res) {
-			}).fail(function(res) {
-			});
-		})
-	);
+    let detail_id = $(".detail_id");
+    detail_id = detail_id.text();
+    swal({
+            title: "确定删除吗？",
+            text: "你将无法恢复该文件，你的行为将被记录！",
+            icon: "warning",
+            buttons: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确定删除！",
+            dangerMode: true,
+        }).then(function(willDelete){
+            if(willDelete) {
+                $.ajax({
+                    url: '/deleteImg',
+                    type: 'POST',
+                    data: {
+                        'id': detail_id
+                    },
+                    success: function (res) {
+                        swal("删除！", "文件已经被删除。", "success");
+                    }
+                }).done(function (res) {
+                }).fail(function (res) {
+                });
+            }else{
+                swal("已取消");
+            }
+    	});
 });
 
 $('.detail_close').click(function(){
