@@ -94,8 +94,11 @@ private String uploadPicPath;
 
     @ResponseBody
     @PostMapping("/search")
-    public String search(@RequestParam("content") String label,@RequestParam("provider") String provider,@RequestParam("place") String place,@RequestParam("starttime") String starttime,@RequestParam("endtime") String endtime) throws Exception {
+    public String search(@RequestParam("id") String id,@RequestParam("content") String label,@RequestParam("provider") String provider,@RequestParam("place") String place,@RequestParam("starttime") String starttime,@RequestParam("endtime") String endtime) throws Exception {
         List<Picture>result = new ArrayList<Picture>();
+        if(!id.equals("")){
+            result.add(pictureRepository.findById(id));
+        }
       if(!label.equals("")){//标签查找约定，返回全部符合的图片，即图片必须符合所有标签才返回
           List<Picture>tmp = new ArrayList<Picture>();
           if(!provider.equals("")){
