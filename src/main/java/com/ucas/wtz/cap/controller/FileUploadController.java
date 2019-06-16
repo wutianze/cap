@@ -98,50 +98,51 @@ private String uploadPicPath;
         List<Picture>result = new ArrayList<Picture>();
         if(!id.equals("")){
             result.add(pictureRepository.findById(id));
+        }else {
+            if (!label.equals("")) {//标签查找约定，返回全部符合的图片，即图片必须符合所有标签才返回
+                List<Picture> tmp = new ArrayList<Picture>();
+                if (!provider.equals("")) {
+                    if (!place.equals("")) {
+                        tmp = pictureRepository.findByPlaceAndProvider(place, provider);
+                    } else {
+                        tmp = pictureRepository.findByProvider(provider);
+                    }
+                } else {
+                    if (!place.equals("")) {
+                        tmp = pictureRepository.findByPlace(place);
+                    } else {
+                        tmp = pictureRepository.findAll();
+                    }
+                }
+                String[] labels = label.split("\t");
+                for (Picture pic : tmp) {
+                    boolean flag = false;
+                    for (int i = 0; i < labels.length; i++) {
+                        if (!pic.getLabel().contains(labels[i])) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (!flag) {
+                        result.add(pic);
+                    }
+                }
+            } else {
+                if (!provider.equals("")) {
+                    if (!place.equals("")) {
+                        result = pictureRepository.findByPlaceAndProvider(place, provider);
+                    } else {
+                        result = pictureRepository.findByProvider(provider);
+                    }
+                } else {
+                    if (!place.equals("")) {
+                        result = pictureRepository.findByPlace(place);
+                    } else {
+                        result = pictureRepository.findAll();
+                    }
+                }
+            }
         }
-      if(!label.equals("")){//标签查找约定，返回全部符合的图片，即图片必须符合所有标签才返回
-          List<Picture>tmp = new ArrayList<Picture>();
-          if(!provider.equals("")){
-              if(!place.equals("")){
-                  tmp = pictureRepository.findByPlaceAndProvider(place,provider);
-              }else{
-                  tmp = pictureRepository.findByProvider(provider);
-              }
-          }else{
-              if(!place.equals("")){
-                  tmp = pictureRepository.findByPlace(place);
-              }else{
-                  tmp = pictureRepository.findAll();
-              }
-          }
-          String [] labels = label.split("\t");
-          for(Picture pic : tmp){
-              boolean flag = false;
-              for(int i=0;i<labels.length;i++){
-                  if(!pic.getLabel().contains(labels[i])){
-                      flag = true;
-                      break;
-                  }
-              }
-              if(!flag){
-                  result.add(pic);
-              }
-          }
-      }else{
-          if(!provider.equals("")){
-              if(!place.equals("")){
-                  result = pictureRepository.findByPlaceAndProvider(place,provider);
-              }else{
-                  result = pictureRepository.findByProvider(provider);
-              }
-          }else{
-              if(!place.equals("")){
-                  result = pictureRepository.findByPlace(place);
-              }else{
-                  result = pictureRepository.findAll();
-              }
-          }
-      }
       List<Picture>timeRe = new ArrayList<>();
       Date sT=null,eT=null;
       if(starttime!=null&&(!starttime.equals("")))sT = new SimpleDateFormat("yyyy-MM-dd").parse(starttime);
