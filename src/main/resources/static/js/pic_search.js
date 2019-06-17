@@ -139,6 +139,7 @@ function show_picture(res) {
 
 		picture_contain.append(div);
     });
+    showclick();
 }
 
 $("#starttime").calendar({
