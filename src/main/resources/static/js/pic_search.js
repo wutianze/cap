@@ -328,7 +328,7 @@ function initRecord(){
 		let key_list = keys.split("$");
 		let key_text = $("#key").parent().siblings(".prebutton");
 		for(let i = 0; i < key_list.length; i++){
-			$(key_text[i]) = key_list[i];
+			$(key_text[i]).text(key_list[i]);
 		}
 	}
 	let authors = getCookie("author");
@@ -336,7 +336,7 @@ function initRecord(){
 		let author_list = authors.split("$");
 		let author_text = $("#author").parent().siblings(".prebutton");
 		for(let i = 0; i < key_list.length; i++){
-			$(author_text[i]) = author_list[i];
+			$(author_text[i]).text(author_list[i]);
 		}
 	}
 	let places = getCookie("place");
@@ -344,7 +344,7 @@ function initRecord(){
 		let place_list = places.split("$");
 		let place_text = $("#place").parent().siblings(".prebutton");
 		for(let i = 0; i < key_list.length; i++){
-			$(place_text[i]) = place_list[i];
+			$(place_text[i]).text(place_list[i]);
 		}
 	}
 }　
