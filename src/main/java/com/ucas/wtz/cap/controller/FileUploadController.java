@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URLDecoder;
@@ -72,9 +73,9 @@ private String uploadPicPath;
     }
 
     @ResponseBody
+    @Transactional
     @PostMapping("/deleteImg")
     public String deleteImg(@RequestParam("id") String id) throws Exception {
-        ;
         File file = new File(uploadPicPath+id);
         // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
         if (file.exists() && file.isFile()) {
