@@ -149,6 +149,9 @@ private String uploadPicPath;
       if(endtime!=null&&(!endtime.equals("")))eT = new SimpleDateFormat("yyyy-MM-dd").parse(endtime);
       for(Picture pic : result){
           if(sT!=null){
+              if(pic.getDateTime() == null||pic.getDateTime().toString().equals("")){
+                  continue;
+              }
               Date picDate = new SimpleDateFormat("yyyy-MM-dd").parse(pic.getDateTime().toString());
               if((picDate.after(sT)&&picDate.before(eT))||picDate.equals(sT)||picDate.equals(eT)){
                   timeRe.add(pic);
