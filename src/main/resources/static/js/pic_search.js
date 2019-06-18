@@ -305,7 +305,7 @@ function getCookie(c_name){
 function setRecord(key, content){
 	let old_content = getCookie(key);
 	// old_content = "hhh";
-	key_list = old_content.split("$");
+	let key_list = old_content.split("$");
 	if(key_list.length == 3){
 		for(let i = 0; i < 2; i++){
 			key_list[i] = key_list[i+1];
@@ -335,7 +335,7 @@ function initRecord(){
 	if(authors != ""){
 		let author_list = authors.split("$");
 		let author_text = $("#author").parent().siblings(".prebutton");
-		for(let i = 0; i < key_list.length; i++){
+		for(let i = 0; i < author_list.length; i++){
 			$(author_text[i]).text(author_list[i]);
 		}
 	}
@@ -343,7 +343,7 @@ function initRecord(){
 	if(places != ""){
 		let place_list = places.split("$");
 		let place_text = $("#place").parent().siblings(".prebutton");
-		for(let i = 0; i < key_list.length; i++){
+		for(let i = 0; i < place_list.length; i++){
 			$(place_text[i]).text(place_list[i]);
 		}
 	}
